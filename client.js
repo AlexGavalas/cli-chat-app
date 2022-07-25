@@ -16,9 +16,8 @@ socket.io.on('reconnect_attempt', () => {
 socket.on('connect', () => {
     console.log(`Connected to server`);
     isConnected = true;
+    socket.emit('login', { name });
 });
-
-socket.emit('login', { name });
 
 socket.on('users', (users) => console.log(`\nOnline users are: ${users}\n`));
 socket.on('user-added', (user) => console.log(`\nUser ${user} joined the chat`));
