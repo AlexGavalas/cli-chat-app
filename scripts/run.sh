@@ -1,0 +1,1 @@
+docker run --name chat-server --rm -p 3000:3000 -d chat-server

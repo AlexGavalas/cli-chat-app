@@ -1,0 +1,18 @@
+{
+    "name": "chat-app",
+    "version": "0.0.1",
+    "description": "A chat app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon -x node server.js -w server.js"
+    },
+    "dependencies": {
+        "prompts": "2.4.2",
+        "socket.io": "4.5.1",
+        "socket.io-client": "4.5.1"
+    },
+    "devDependencies": {
+        "nodemon": "2.0.19"
+    }
+}
