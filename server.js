@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 
 const io = new Server(3000);
 
-const messageHistory = [];
+const messageHistory = {};
 
 const userSockets = new Map();
 const sockets = new Map();
@@ -13,19 +13,21 @@ io.on('connection', (socket) => {
         sockets.set(socket.id, name);
 
         socket.broadcast.emit('user-added', name);
+        socket.emit('user-added', name);
     });
 
     socket.on('list-users', () => {
-        socket.emit('users', [...userSockets.keys()].join(', '));
+        socket.emit('users', [...userSockets.keys()]);
     });
 
-    socket.on('message', ({ from, to, message }) => {
+    socket.on('message', ({ from = sockets.get(socket.id), to, message }) => {
         const destSocket = userSockets.get(to);
 
         if (destSocket) {
-            destSocket.send({ from, message });
+            messageHistory[from] = (messageHistory[from] || []).concat(message);
+            messageHistory[to] = (messageHistory[to] || []).concat(message);
 
-            messageHistory.push({ from, message });
+            destSocket.emit('message', { from, message });
         }
     });
 
