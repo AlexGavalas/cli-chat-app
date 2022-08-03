@@ -41,9 +41,9 @@ while (true) {
 
     if (message === 'list-users') {
         socket.emit('list-users');
-    } else if (/^history\s+\d+$/.test(message)) {
-        const [, limit] = message.split(/\s/).filter(Boolean);
-        socket.emit('history', { limit });
+    } else if (/^history\s+\w+\s+\d+$/.test(message)) {
+        const [, user, limit] = message.split(/\s/).filter(Boolean);
+        socket.emit('history', { user, limit });
     } else if (message === 'exit') {
         process.exit(0);
     } else if (message) {

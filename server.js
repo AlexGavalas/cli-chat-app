@@ -24,15 +24,17 @@ io.on('connection', (socket) => {
         const destSocket = userSockets.get(to);
 
         if (destSocket) {
-            messageHistory[from] = (messageHistory[from] || []).concat(message);
-            messageHistory[to] = (messageHistory[to] || []).concat(message);
+            messageHistory[from] = (messageHistory[from] || []).concat({ from, message });
+            messageHistory[to] = (messageHistory[to] || []).concat({ from, message });
 
             destSocket.emit('message', { from, message });
         }
     });
 
-    socket.on('history', ({ limit }) => {
-        const requestedMessages = messageHistory
+    socket.on('history', ({ user, limit }) => {
+        if (!messageHistory[user]) return;
+
+        const requestedMessages = messageHistory[user]
             .slice(-limit)
             .map(({ message, from }) => `[${from}]: ${message}`)
             .join('\n');
