@@ -46,7 +46,7 @@ while (true) {
         socket.emit('history', { limit });
     } else if (message === 'exit') {
         process.exit(0);
-    } else {
+    } else if (message) {
         const [to, msg] = message.split(':').filter(Boolean);
 
         socket.emit('message', { from: name, to, message: msg });
