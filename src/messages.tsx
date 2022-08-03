@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+
 import { socket, useStore } from './store';
 
 export const Messages = () => {
     const [msg, setMsg] = useState('');
 
     const activeUser = useStore((store) => store.activeUser || '');
+    const loggedInUser = useStore((store) => store.user || '');
 
     const messages = useStore((store) =>
-        store.activeUser ? store.messages[store.activeUser] || [] : []
+        store.activeUser ? store.messages[store.messagesKey] || [] : []
     );
 
     const addMessage = useStore((store) => store.addMessage);
@@ -15,7 +17,7 @@ export const Messages = () => {
     const onClick = () => {
         setMsg('');
         socket.emit('message', { to: activeUser, message: msg });
-        addMessage(msg, activeUser);
+        addMessage(msg, loggedInUser, activeUser);
     };
 
     if (!activeUser) return <div>Messages</div>;
@@ -25,8 +27,10 @@ export const Messages = () => {
             Messages with {activeUser}
             <div className="messages">
                 <ul>
-                    {messages.map((msg) => (
-                        <li key={msg}>{msg}</li>
+                    {messages.map(({ msg, from }) => (
+                        <li key={msg}>
+                            {from}: {msg}
+                        </li>
                     ))}
                 </ul>
                 <div className="send-wrapper">
